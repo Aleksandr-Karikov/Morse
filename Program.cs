@@ -38,8 +38,6 @@ namespace morse_code
                 using (StreamReader sr = new StreamReader(Path_read))
                 {
                     string line;
-                    try
-                    {
                          while ( (line = sr.ReadLine()) != null )
                          {
                         
@@ -48,11 +46,6 @@ namespace morse_code
                                      sw.WriteLine(translater(line));
                                  }
                          }
-                    }
-                    catch (Exception e)
-                       {
-                            Console.WriteLine(e.Message);
-                       }
                     Console.WriteLine("Запись завершена");
                 }
             }
