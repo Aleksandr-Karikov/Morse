@@ -9,7 +9,7 @@ namespace morse_code
     class Morse
     {
         public static Exception incorrect = new Exception("incorrect text");
-        private static Dictionary<string, string> m_c_1 = new Dictionary<string, string>(36)
+        private static Dictionary<string, string> m_c_1ENG = new Dictionary<string, string>(36)
         {
             ["*-"] = "A",
             ["-***"] = "B",
@@ -48,7 +48,52 @@ namespace morse_code
             ["----*"] = "9",
             ["-----"] = "0"
         };
-        private static Dictionary<string, string> m_c_2 = new Dictionary<string, string>(36)
+        private static Dictionary<string, string> m_c_1RUS = new Dictionary<string, string>(36)
+        {
+            ["*-"] = "А",
+            ["-***"] = "Б",
+            ["*--"] = "В",
+            ["--*"] = "Г",
+            ["-**"] = "Д",
+            ["*"] = "Е",
+            ["***-"] = "Ж",
+            ["--**"] = "З",
+            ["**"] = "И",
+            ["*---"] = "Й",
+            ["-*-"] = "К",
+            ["*-**"] = "Л",
+            ["--"] = "М",
+            ["-*"] = "Н",
+            ["---"] = "О",
+            ["*--*"] = "П",
+            ["*-*"] = "Р",
+            ["***"] = "С",
+            ["-"] = "Т",
+            ["**-"] = "У",
+            ["**-*"] = "Ф",
+            ["****"] = "Х",
+            ["-*-*"] = "Ц",
+            ["---*"] = "Ч",
+            ["----"] = "Ш",
+            ["--*-"] = "Щ",
+            ["*--*-*"] = "Ъ",
+            ["-*--"] = "Ы",
+            ["-**-"] = "Ь",
+            ["***-***"] = "Э",
+            ["**--"] = "Ю",
+            ["*-*-"] = "Я",
+            ["*----"] = "1",
+            ["**---"] = "2",
+            ["***--"] = "3",
+            ["****-"] = "4",
+            ["*****"] = "5",
+            ["-****"] = "6",
+            ["--***"] = "7",
+            ["---**"] = "8",
+            ["----*"] = "9",
+            ["-----"] = "0"
+        };
+        private static Dictionary<string, string> m_c_2ENG = new Dictionary<string, string>(36)
         {
             ["A"] = "*-",
             ["B"] = "-***",
@@ -87,8 +132,64 @@ namespace morse_code
             ["9"] = "----*",
             ["0"] = "-----"
         };
-        public static string TranslateFromMorse(string input)
+        private static Dictionary<string, string> m_c_2RUS = new Dictionary<string, string>(36)
         {
+            ["*-А"] = "*-",
+            ["Б"] = "-***",
+            ["В"] = "*--",
+            ["Г"] = "--*",
+            ["Д"] = "-**",
+            ["Е"] = "*",
+            ["Ж"] = "***-",
+            ["З"] = "--**",
+            ["И"] = "**",
+            ["Й"] = "*---",
+            ["К"] = "-*-",
+            ["Л"] = "*-**",
+            ["М"] = "--",
+            ["Н"] = "-*",
+            ["О"] = "---",
+            ["П"] = "*--*",
+            ["Р"] = "*-*",
+            ["С"] = "***",
+            ["Т"] = "-",
+            ["У"] = "**-",
+            ["Ф"] = "**-*",
+            ["Х"] = "****",
+            ["Ц"] = "-*-*",
+            ["Ч"] = "---*",
+            ["Ш"] = "----",
+            ["Щ"] = "--*-",
+            ["Ъ"] = "*--*-*",
+            ["Ы"] = "-*--",
+            ["Ь"] = "-**-",
+            ["Э"] = "***-***",
+            ["Ю"] = "**--",
+            ["Я"] = "*-*-",
+            ["1"] = "*----",
+            ["2"] = "**---",
+            ["3"] = "***--",
+            ["4"] = "****-",
+            ["5"] = "*****",
+            ["6"] = "-****",
+            ["7"] = "--***",
+            ["8"] = "---**",
+            ["9"] = "----*",
+            ["0"] = "-----"
+        };
+        private static Dictionary<string, string> copy = new Dictionary<string, string> { [""] = "" };
+        public static string TranslateFromMorse(string input,string language)
+        {
+            if (language=="rus")
+            {
+                     copy = m_c_1RUS;
+            } else
+            {
+                if (language == "eng")
+                {
+                    copy = m_c_1ENG;
+                }
+            }
             try
             {
                 string temp = "";
@@ -101,7 +202,7 @@ namespace morse_code
                     {
                         if (input[i + 1] == ' ' && temp != "")
                         {
-                            output += m_c_1[temp];
+                            output += copy[temp];
                             output += input[i];
                             temp = "";
                             i += 2;
@@ -111,7 +212,7 @@ namespace morse_code
                    
                     if (input[i] == ' ' && temp != "")
                         {
-                            output += m_c_1[temp];
+                            output += copy[temp];
                             temp = "";
                             i++;
                             continue;
@@ -127,8 +228,19 @@ namespace morse_code
                 throw incorrect;
             }
         }
-        public static string TranslateToMorse(string input)
+        public static string TranslateToMorse(string input, string language)
         {
+            if (language == "rus")
+            {
+                copy = m_c_2RUS;
+            }
+            else
+            {
+                if (language == "eng")
+                {
+                    copy = m_c_2ENG;
+                }
+            }
             try
             {
                 string output = "";
@@ -141,7 +253,7 @@ namespace morse_code
                     }
                     if (input[i] != ' ')
                     {
-                        output += m_c_2[input[i].ToString()];
+                        output += copy[input[i].ToString()];
                         output += ' ';
                     }
                     i++;

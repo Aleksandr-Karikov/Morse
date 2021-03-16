@@ -9,7 +9,7 @@ namespace morse_code
    
     class Program
     {
-        delegate string tr(string input);
+        delegate string tr(string input,string language);
         static void Main(string[] args)
         {
             tr translater;
@@ -32,7 +32,25 @@ namespace morse_code
                     return;
                 }
             }
-            
+            string language="";
+            Console.WriteLine("1 - rus");
+            Console.WriteLine("2 - eng");
+            key = Console.ReadLine();
+            if (key == "1")
+            {
+                language = "rus";
+            }
+            else
+            {
+                if (key == "2")
+                {
+                    language = "eng";
+                }
+                else
+                {
+                    return;
+                }
+            }
             try
             {
                 using (StreamReader sr = new StreamReader(Path_read))
@@ -43,7 +61,7 @@ namespace morse_code
                         
                                  using (StreamWriter sw = new StreamWriter(Path_write, true, System.Text.Encoding.Default))
                                  {
-                                     sw.WriteLine(translater(line));
+                                     sw.WriteLine(translater(line,language));
                                  }
                          }
                     Console.WriteLine("Запись завершена");
