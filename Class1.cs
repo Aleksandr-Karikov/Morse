@@ -8,6 +8,7 @@ namespace morse_code
 {
     class Morse
     {
+        public static Exception incorrect = new Exception("incorrect text");
         private static Dictionary<string, string> m_c_1 = new Dictionary<string, string>(36)
         {
             ["*-"] = "A",
@@ -96,25 +97,35 @@ namespace morse_code
                 int i = 0;
                 while (i < input.Length)
                 {
-                    if (input[i] == ' ' && temp != "")
+                    if (input[i] == ' ' && i+1<input.Length )
                     {
-                        output += m_c_1[temp];
-                        temp = "";
-                        i++;
-                        continue;
+                        if (input[i + 1] == ' ' && temp != "")
+                        {
+                            output += m_c_1[temp];
+                            output += input[i];
+                            temp = "";
+                            i += 2;
+                            continue;
+                        }
                     }
-                    if (input[i] != ' ')
-                        temp += input[i];
-
+                   
+                    if (input[i] == ' ' && temp != "")
+                        {
+                            output += m_c_1[temp];
+                            temp = "";
+                            i++;
+                            continue;
+                        }
+                   if (input[i] != ' ')
+                       temp += input[i];
                     i++;
                 }
                 return output;
             }
             catch(Exception)
             {
-                Console.WriteLine("Something went wrong :((");
+                throw incorrect;
             }
-            return "";
         }
         public static string TranslateToMorse(string input)
         {
@@ -124,6 +135,10 @@ namespace morse_code
                 int i = 0;
                 while (i < input.Length)
                 {
+                    if (input[i]==' ')
+                    {
+                        output += ' ';
+                    }
                     if (input[i] != ' ')
                     {
                         output += m_c_2[input[i].ToString()];
@@ -135,9 +150,8 @@ namespace morse_code
             } 
             catch(Exception)
             {
-                Console.WriteLine("Something went wrong :((");
+                throw incorrect;
             }
-            return "";
         }
     }
 }
