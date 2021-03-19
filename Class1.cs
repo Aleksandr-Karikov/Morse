@@ -3,267 +3,134 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-
+using System.IO;
 namespace morse_code
 {
     class Morse
     {
-        public static Exception incorrect = new Exception("incorrect text");
-        private static Dictionary<string, string> m_c_1ENG = new Dictionary<string, string>(36)
+        private static Dictionary<string, string> lang = new Dictionary<string, string> { [""] = "" }; // словарь для азбуки
+
+        public Morse(string language,bool to) //конструктор с определением языка и определением первода из азбуки морза или в азбуку морзе
         {
-            ["*-"] = "A",
-            ["-***"] = "B",
-            ["-*-*"] = "C",
-            ["-**"] = "D",
-            ["*"] = "E",
-            ["**-*"] = "F",
-            ["--*"] = "G",
-            ["****"] = "H",
-            ["**"] = "I",
-            ["*---"] = "J",
-            ["-*-"] = "K",
-            ["*-**"] = "L",
-            ["--"] = "M",
-            ["-*"] = "N",
-            ["---"] = "O",
-            ["*--*"] = "P",
-            ["--*-"] = "Q",
-            ["*-*"] = "R",
-            ["***"] = "S",
-            ["-"] = "T",
-            ["**-"] = "U",
-            ["***-"] = "V",
-            ["*--"] = "W",
-            ["-**-"] = "X",
-            ["-*--"] = "Y",
-            ["--**"] = "Z",
-            ["*----"] = "1",
-            ["**---"] = "2",
-            ["***--"] = "3",
-            ["****-"] = "4",
-            ["*****"] = "5",
-            ["-****"] = "6",
-            ["--***"] = "7",
-            ["---**"] = "8",
-            ["----*"] = "9",
-            ["-----"] = "0"
-        };
-        private static Dictionary<string, string> m_c_1RUS = new Dictionary<string, string>(36)
-        {
-            ["*-"] = "А",
-            ["-***"] = "Б",
-            ["*--"] = "В",
-            ["--*"] = "Г",
-            ["-**"] = "Д",
-            ["*"] = "Е",
-            ["***-"] = "Ж",
-            ["--**"] = "З",
-            ["**"] = "И",
-            ["*---"] = "Й",
-            ["-*-"] = "К",
-            ["*-**"] = "Л",
-            ["--"] = "М",
-            ["-*"] = "Н",
-            ["---"] = "О",
-            ["*--*"] = "П",
-            ["*-*"] = "Р",
-            ["***"] = "С",
-            ["-"] = "Т",
-            ["**-"] = "У",
-            ["**-*"] = "Ф",
-            ["****"] = "Х",
-            ["-*-*"] = "Ц",
-            ["---*"] = "Ч",
-            ["----"] = "Ш",
-            ["--*-"] = "Щ",
-            ["*--*-*"] = "Ъ",
-            ["-*--"] = "Ы",
-            ["-**-"] = "Ь",
-            ["***-***"] = "Э",
-            ["**--"] = "Ю",
-            ["*-*-"] = "Я",
-            ["*----"] = "1",
-            ["**---"] = "2",
-            ["***--"] = "3",
-            ["****-"] = "4",
-            ["*****"] = "5",
-            ["-****"] = "6",
-            ["--***"] = "7",
-            ["---**"] = "8",
-            ["----*"] = "9",
-            ["-----"] = "0"
-        };
-        private static Dictionary<string, string> m_c_2ENG = new Dictionary<string, string>(36)
-        {
-            ["A"] = "*-",
-            ["B"] = "-***",
-            ["C"] = "-*-*",
-            ["D"] = "-**",
-            ["E"] = "*",
-            ["F"] = "**-*",
-            ["G"] = "--*",
-            ["H"] = "****",
-            ["I"] = "**",
-            ["J"] = "*---",
-            ["K"] = "-*-",
-            ["L"] = "*-**",
-            ["M"] = "--",
-            ["N"] = "-*",
-            ["O"] = "---",
-            ["P"] = "*--*",
-            ["Q"] = "--*-",
-            ["R"] = "*-*",
-            ["S"] = "***",
-            ["T"] = "-",
-            ["U"] = "**-",
-            ["V"] = "***-",
-            ["W"] = "*--",
-            ["X"] = "-**-",
-            ["Y"] = "-*--",
-            ["Z"] = "--**",
-            ["1"] = "*----",
-            ["2"] = "**---",
-            ["3"] = "***--",
-            ["4"] = "****-",
-            ["5"] = "*****",
-            ["6"] = "-****",
-            ["7"] = "--***",
-            ["8"] = "---**",
-            ["9"] = "----*",
-            ["0"] = "-----"
-        };
-        private static Dictionary<string, string> m_c_2RUS = new Dictionary<string, string>(36)
-        {
-            ["*-А"] = "*-",
-            ["Б"] = "-***",
-            ["В"] = "*--",
-            ["Г"] = "--*",
-            ["Д"] = "-**",
-            ["Е"] = "*",
-            ["Ж"] = "***-",
-            ["З"] = "--**",
-            ["И"] = "**",
-            ["Й"] = "*---",
-            ["К"] = "-*-",
-            ["Л"] = "*-**",
-            ["М"] = "--",
-            ["Н"] = "-*",
-            ["О"] = "---",
-            ["П"] = "*--*",
-            ["Р"] = "*-*",
-            ["С"] = "***",
-            ["Т"] = "-",
-            ["У"] = "**-",
-            ["Ф"] = "**-*",
-            ["Х"] = "****",
-            ["Ц"] = "-*-*",
-            ["Ч"] = "---*",
-            ["Ш"] = "----",
-            ["Щ"] = "--*-",
-            ["Ъ"] = "*--*-*",
-            ["Ы"] = "-*--",
-            ["Ь"] = "-**-",
-            ["Э"] = "***-***",
-            ["Ю"] = "**--",
-            ["Я"] = "*-*-",
-            ["1"] = "*----",
-            ["2"] = "**---",
-            ["3"] = "***--",
-            ["4"] = "****-",
-            ["5"] = "*****",
-            ["6"] = "-****",
-            ["7"] = "--***",
-            ["8"] = "---**",
-            ["9"] = "----*",
-            ["0"] = "-----"
-        };
-        private static Dictionary<string, string> copy = new Dictionary<string, string> { [""] = "" };
-        public static string TranslateFromMorse(string input,string language)
-        {
-            if (language=="rus")
+            string Path_read; //путь к файлу с языками 
+            if (language == "rus")  //в зависимости от языка определяем путь
             {
-                     copy = m_c_1RUS;
-            } else
-            {
-                if (language == "eng")
-                {
-                    copy = m_c_1ENG;
-                }
-            }
-            try
-            {
-                string temp = "";
-                string output = "";
-                input += ' ';
-                int i = 0;
-                while (i < input.Length)
-                {
-                    if (input[i] == ' ' && i+1<input.Length )
-                    {
-                        if (input[i + 1] == ' ' && temp != "")
-                        {
-                            output += copy[temp];
-                            output += input[i];
-                            temp = "";
-                            i += 2;
-                            continue;
-                        }
-                    }
-                   
-                    if (input[i] == ' ' && temp != "")
-                        {
-                            output += copy[temp];
-                            temp = "";
-                            i++;
-                            continue;
-                        }
-                   if (input[i] != ' ')
-                       temp += input[i];
-                    i++;
-                }
-                return output;
-            }
-            catch(Exception)
-            {
-                throw incorrect;
-            }
-        }
-        public static string TranslateToMorse(string input, string language)
-        {
-            if (language == "rus")
-            {
-                copy = m_c_2RUS;
+                Path_read = @"C:\Users\Александр\source\repos\ConsoleApp8\dic_2_rus.txt";
             }
             else
             {
-                if (language == "eng")
-                {
-                    copy = m_c_2ENG;
-                }
+                Path_read = @"C:\Users\Александр\source\repos\ConsoleApp8\dic_1_eng.txt";
             }
-            try
-            {
-                string output = "";
-                int i = 0;
-                while (i < input.Length)
+           try
+           {
+               using (StreamReader sr = new StreamReader(Path_read)) // создаем поток чтения
+               {
+                   string key="", ch="",line; //key - ключ ch - то что лежит в словаре по данному ключу, в line считываем строчку с файла
+                   while ((line = sr.ReadLine()) != null) //пока считывает строку
+                   {
+                        line += '\n'; //добавляем перенос строки
+                       int i = 0; //счетчик 
+                       while (line[i]!=' ') //пока не встретим пробел
+                       {
+                           if (to)              //в зависимости от превод из азбуки морза или в азбуку морза
+                           {                    // считываем ключ либо значение
+                               ch += line[i];
+                           } else
+                           {
+                               key += line[i];
+                           }
+                            i++;
+                       }
+                        i++;
+                       while(line[i] != '\n') //пока е дойдем до конца строки
+                       {
+                           if (to)                        //в зависимости от превод из азбуки морза или в азбуку морза
+                            {                              // считываем ключ  либо значение
+                               key += line[i];
+                           }
+                           else
+                           {
+                               ch += line[i];
+                           }
+                            i++;
+                       }
+                        lang.Add(key, ch); // добавляем элемент в словарь
+                        key = "";       //чистим 
+                        ch = "";
+                   }
+               }
+            }
+           catch (Exception e)
+           {
+               Console.WriteLine(e.Message);
+           }
+           
+        }
+        public static string TranslateFromMorse(string input) //перевод из азбуки морза
+        { 
+            string output = ""; //строка на выход
+            string temp = ""; // копирование
+            input += ' '; // искуственно добавляем пробел в конец строки
+            int i = 0; //счетчик
+                while (i < input.Length) // пока не дойдем до конца строки
                 {
-                    if (input[i]==' ')
+                    if (input[i] == ' ' && i + 1 < input.Length) //проверка на два пробела (чтобы отделять слова друг от друга)
+                    {
+                        if (input[i + 1] == ' ' && temp != "")
+                        {
+                            try
+                            {
+                                output += lang[temp]; //пытаемя считать со словаря
+                            }                         //если такого элемента нет в словаре записываем строку не изменной
+                            catch (Exception)
+                            {
+                                output += temp;
+                            }
+                            output += input[i]; //добавляем пробел для разделения слов
+                            temp = ""; //чистим temp
+                            i += 2; // пропускаем 2 пробела
+                            continue;
+                        }
+                    }
+
+                    if (input[i] == ' ' && temp != "") // если встречаем пробел и temp не пуст
+                    {
+                        output += lang[temp]; // переводим с помощью словаря и записываем к выходной строке
+                        temp = "";  //чистим temp
+                        i++;
+                        continue;
+                    }
+                    if (input[i] != ' ') //если элемент это не пробел
+                        temp += input[i]; // записываем в temp
+                    i++;
+                }
+                return output; //возвращаеем выходную строку
+        }
+        public static string TranslateToMorse(string input) //перевод в азбуку морза
+        {
+            string output = ""; //выходня строка 
+            int i = 0; // счетчик
+                while (i < input.Length) //пока не дойдем до конца строки
+                {
+                    if (input[i] == ' ') //если встечаем пробел добавляем пробел на выход для разделения строк
                     {
                         output += ' ';
                     }
-                    if (input[i] != ' ')
+                    if (input[i] != ' ') //если не пробел
                     {
-                        output += copy[input[i].ToString()];
-                        output += ' ';
+                    try
+                    {
+                        output += lang[input[i].ToString()]; //попытаться считать со словаря
+                    }
+                    catch (Exception)
+                    {
+                        output += input[i].ToString(); //если такого элемента нет в словаре то записываем без изменений
+                    }
+                    output += ' '; //добавляем пробел
                     }
                     i++;
                 }
-                return output;
-            } 
-            catch(Exception)
-            {
-                throw incorrect;
-            }
+            return output; //возвращаем выходную строку
         }
     }
 }
