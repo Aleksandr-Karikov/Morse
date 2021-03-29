@@ -8,7 +8,7 @@ namespace morse_code
 {
     class Morse
     {
-        private static Dictionary<string, string> lang = new Dictionary<string, string> { [""] = "" }; // словарь для азбуки
+        private  Dictionary<string, string> lang = new Dictionary<string, string> { [""] = "" }; // словарь для азбуки
 
         public Morse(string language,bool to) //конструктор с определением языка и определением первода из азбуки морза или в азбуку морзе
         {
@@ -23,7 +23,7 @@ namespace morse_code
             }
            try
            {
-               using (StreamReader sr = new StreamReader(Path_read)) // создаем поток чтения
+               using (StreamReader sr = new StreamReader(Path_read,Encoding.UTF8)) // создаем поток чтения
                {
                    string key="", ch="",line; //key - ключ ch - то что лежит в словаре по данному ключу, в line считываем строчку с файла
                    while ((line = sr.ReadLine()) != null) //пока считывает строку
@@ -66,7 +66,7 @@ namespace morse_code
            }
            
         }
-        public static string TranslateFromMorse(string input) //перевод из азбуки морза
+        public string TranslateFromMorse(string input) //перевод из азбуки морза
         { 
             string output = ""; //строка на выход
             string temp = ""; // копирование
@@ -106,15 +106,16 @@ namespace morse_code
                 }
                 return output; //возвращаеем выходную строку
         }
-        public static string TranslateToMorse(string input) //перевод в азбуку морза
+        public  string TranslateToMorse(string input) //перевод в азбуку морза
         {
             string output = ""; //выходня строка 
+            input = input.ToUpper();
             int i = 0; // счетчик
                 while (i < input.Length) //пока не дойдем до конца строки
                 {
                     if (input[i] == ' ') //если встечаем пробел добавляем пробел на выход для разделения строк
                     {
-                        output += ' ';
+                        output += "  ";
                     }
                     if (input[i] != ' ') //если не пробел
                     {
@@ -124,7 +125,7 @@ namespace morse_code
                     }
                     catch (Exception)
                     {
-                        output += input[i].ToString(); //если такого элемента нет в словаре то записываем без изменений
+                        //output += input[i].ToString(); //если такого элемента нет в словаре то записываем без изменений
                     }
                     output += ' '; //добавляем пробел
                     }
